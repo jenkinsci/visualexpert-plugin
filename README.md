@@ -15,18 +15,18 @@ Visual Expert lists the existing projects user has currently configured in local
 and select the project analysis and/or generate reference/codereview documentation tasks.
 
 ![visual expert](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/builder-config.png)
-https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/builder-config.png
-<p><br></p>
-
-![required field validation](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/check-validation.png)
 
 <p><br></p>
 
-![visual expert configuration](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/set-configuration.png)
+![required field validation](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/check-validation.PNG)
 
 <p><br></p>
 
-![visual expert build console output](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/console-output.png)
+![visual expert configuration](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/set-configuration.PNG)
+
+<p><br></p>
+
+![visual expert build console output](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/console-output.PNG)
 
 ## LICENSE
 
