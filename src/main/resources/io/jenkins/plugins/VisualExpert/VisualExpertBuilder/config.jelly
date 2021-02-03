@@ -1,0 +1,24 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form">
+
+    <f:entry name="installPath" title="Installation Path" field="installPath">
+        <f:textbox default="C:\Program Files (x86)\Novalys\Visual Expert 2021\Novalys.VisualExpert.Console.exe" />
+    </f:entry>
+    
+    <f:entry name="projectName" title="Visual Expert Project" field="projectName">
+	<f:select />
+    </f:entry>
+	
+    <f:entry name="doAnalysis" title="Analyze Project" field="doAnalysis">
+       <f:checkbox default="true"/>
+    </f:entry>
+    <f:entry name="createReferenceDocument" title="Generate Reference Documentation" field="createReferenceDocument">
+        <f:checkbox />
+    </f:entry>
+    <f:entry name="createCodeReviewDocument" title="Generate Code Review Documentation" field="createCodeReviewDocument">
+        <f:checkbox />
+    </f:entry>
+
+</j:jelly>
