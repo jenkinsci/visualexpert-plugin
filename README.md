@@ -14,21 +14,21 @@ Once Visual Expert plugin is installed to Jenkins server, user can find the Visu
 Visual Expert lists the existing projects user has currently configured in local system and user can select a Visual Expert projects 
 and select the project analysis and/or generate reference/codereview documentation tasks.
 
-![visual expert](https://raw.githubusercontent.com/jenkinsci/visualexpert-plugin/master/docs/images/builder-config.png)
+![visual expert](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/builder-config.png)
+https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/builder-config.png
+<p><br></p>
+
+![required field validation](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/check-validation.png)
 
 <p><br></p>
 
-![required field validation](https://raw.githubusercontent.com/jenkinsci/visualexpert-plugin/master/docs/images/check-validation.png)
+![visual expert configuration](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/set-configuration.png)
 
 <p><br></p>
 
-![visual expert configuration](https://raw.githubusercontent.com/jenkinsci/visualexpert-plugin/master/docs/images/set-configuration.png)
-
-<p><br></p>
-
-![visual expert build console output](https://raw.githubusercontent.com/jenkinsci/visualexpert-plugin/master/docs/images/console-output.png)
+![visual expert build console output](https://github.com/DevNovalys/VisualExpert-plugin/blob/main/docs/images/console-output.png)
 
 ## LICENSE
 
-Licensed under MIT, see [LICENSE](LICENSE.md)
+Licensed under GNU General Public License Version 2, see [LICENSE](LICENSE.md)
 
