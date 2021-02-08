@@ -3,7 +3,6 @@ package io.jenkins.plugins.VisualExpert;
 import hudson.Launcher.LocalLauncher;
 import hudson.util.ArgumentListBuilder;
 import hudson.model.Result;
-import hudson.EnvVars;
 
 import com.google.common.base.Strings;
 
@@ -26,7 +25,9 @@ import org.kohsuke.stapler.QueryParameter;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
 import hudson.model.AbstractProject;
+import hudson.model.Item;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -35,6 +36,9 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
 import jenkins.tasks.SimpleBuildStep;
+import org.kohsuke.stapler.AncestorInPath;
+import org.kohsuke.stapler.verb.POST;
+
 
 public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
 
@@ -52,7 +56,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     private static final String GENERATE_DOCUMENTATION_SUCCESS_STRING = "Documentation generated for the project";
     
     // Analyze Project Command Success Message
-    private static final String ANALYZE_PROJECT_SUCCESS_STRING = "Analysis operation is successful";
+    private static final String ANALYZE_PROJECT_SUCCESS_STRING = "Analysis completed successfully for the project";
 
     /**
      *
@@ -194,31 +198,45 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             return "Visual Expert";
         }
 
-        public FormValidation doCheckProjectName(@QueryParameter String value)
+        @POST
+        public FormValidation doCheckProjectName(@AncestorInPath Item item, @QueryParameter String value)
                 throws IOException, ServletException {
 
-            if (value.length() == 0 || value.equals("null")) {
+            if (item == null || !item.hasPermission(Item.CONFIGURE)) { 
+                return FormValidation.ok();
+            }
+  
+            if (Util.fixEmptyAndTrim(value) == null || value.equals("null")) {
                 return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_missingName());
             }
 
             return FormValidation.ok();
         }
 
-        public FormValidation doCheckCreateCodeReviewDocument(@QueryParameter String value, @QueryParameter boolean doAnalysis, @QueryParameter boolean createReferenceDocument)
+        
+        public FormValidation doCheckCreateCodeReviewDocument(@AncestorInPath Item item, @QueryParameter boolean doAnalysis, @QueryParameter boolean createReferenceDocument, @QueryParameter String value)
                 throws IOException, ServletException {
 
+            if (item == null || !item.hasPermission(Item.CONFIGURE)) { 
+                return FormValidation.ok();
+            }
+            
             // Check if at least one of Analyze Project or Generate Code Review Documentation or Generate Reference Documentation must be checked else show error message
-            if (!Boolean.parseBoolean(value) && !doAnalysis && !createReferenceDocument) {
+            if (Util.fixEmptyAndTrim(value) == null || (!Boolean.parseBoolean(value) && !doAnalysis && !createReferenceDocument)) {
                 return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_atLeastOneCheck());
             }
 
             return FormValidation.ok();
         }
 
-        public FormValidation doCheckInstallPath(@QueryParameter String value)
+        @POST
+        public FormValidation doCheckInstallPath(@AncestorInPath Item item, @QueryParameter String value)
                 throws IOException, ServletException {
-
-            if (value.length() == 0) {
+            if (item == null || !item.hasPermission(Item.CONFIGURE)) { 
+                return FormValidation.ok();
+            }
+  
+            if (Util.fixEmptyAndTrim(value) == null) {
                 return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_missingInstallPath());
             }
             
@@ -232,11 +250,15 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
-        public ListBoxModel doFillProjectNameItems(@QueryParameter String projectName, @QueryParameter String installPath) {
+        @POST
+        public ListBoxModel doFillProjectNameItems(@AncestorInPath Item item, @QueryParameter String projectName, @QueryParameter String installPath) {
 
             // Loads list of Visual Expert Projects in list box for user's selection for Project Analysis or Documentation generation tasks automation
-            
             ListBoxModel model = new ListBoxModel();
+            
+            if (item == null || !item.hasPermission(Item.CONFIGURE)) { 
+                return model;
+            }
 
             model.add(new Option("--- Select Project ---", null, Strings.isNullOrEmpty(projectName)));
 
@@ -244,7 +266,6 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                 return model;
             }
 
-            
             // Reads list of Visual Expert Projects by calling Visual Expert Get Projects List Command and reading projects list from text file
             ArrayList<String> projectList = VisualExpertHelper.ReadProjectsFile(installPath);
 
