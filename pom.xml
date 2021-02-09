@@ -67,14 +67,14 @@
             <url>https://opensource.org/licenses/gpl-2.0.php</url>
         </license>
     </licenses>
-    <!-- If you want this to appear on the plugin site page:
+
     <developers>
       <developer>
-        <id>bhacker</id>
-        <name>Bob Q. Hacker</name>
-        <email>bhacker@nowhere.net</email>
+        <id>DevNovalys</id>
+        <name>DevNovalys</name>
+        <email>dev@novalys.net</email>
       </developer>
-    </developers> -->
+    </developers>
 
     <scm>
         <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
