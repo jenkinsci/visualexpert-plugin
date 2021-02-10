@@ -1,6 +1,5 @@
 
 [![Build Status](https://ci.jenkins.io/job/Plugins/job/visualexpert-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/visualexpert-plugin/job/master/)
-[![Contributors](https://img.shields.io/github/contributors/jenkinsci/visualexpert-plugin.svg)](https://github.com/jenkinsci/visualexpert-plugin/graphs/contributors)
 [![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/visualexpert.svg)](https://plugins.jenkins.io/visualexpert)
 [![GitHub release](https://img.shields.io/github/release/jenkinsci/visualexpert-plugin.svg?label=changelog)](https://github.com/jenkinsci/visualexpert-plugin/releases/latest)
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/visualexpert.svg?color=blue)](https://plugins.jenkins.io/visualexpert)
