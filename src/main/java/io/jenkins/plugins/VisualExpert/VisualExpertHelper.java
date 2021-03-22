@@ -73,7 +73,7 @@ public class VisualExpertHelper {
             while (projectScanner.hasNextLine()) {
 
                 String line = projectScanner.nextLine();
-                
+                listener.getLogger().println(line);
                 if (line.contains(compareString)) {
                     return negateComparison;
                 }

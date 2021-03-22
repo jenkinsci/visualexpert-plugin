@@ -35,6 +35,7 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
+import java.util.concurrent.TimeUnit;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.verb.POST;
@@ -285,7 +286,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     public static class VEProjectsLister {
 
         public static volatile VEProjectsLister instance;
-
+        public static volatile String lastappPath;
         private static final Object mutex = new Object();
 
         /**
@@ -304,9 +305,20 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                     result = instance;
 
                     if (result == null) {
+                        lastappPath = installationPath;
+                        instance = result = new VEProjectsLister(installationPath, defaultProjectsFilePath);
+                    }
+                    else if(lastappPath == null || !lastappPath.equals(installationPath))
+                    {
+                        lastappPath = installationPath;
                         instance = result = new VEProjectsLister(installationPath, defaultProjectsFilePath);
                     }
                 }
+            }
+            else if(lastappPath == null || !lastappPath.equals(installationPath))
+            {
+                lastappPath = installationPath;
+                instance = result = new VEProjectsLister(installationPath, defaultProjectsFilePath);
             }
 
             return result;
@@ -342,12 +354,12 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             String projectsFileName = null;
 
             try {
-
+    
                 TaskListener listener = new StreamBuildListener(new ByteArrayOutputStream());
-                
-                // Call Get Projects List Visual Expert Comamnd
-                new LocalLauncher(listener).launch().cmds(commandArgument).stdout(listener).join();
 
+                // Call Get Projects List Visual Expert Comamnd
+                new LocalLauncher(listener).launch().cmds(commandArgument).stdout(listener).start().joinWithTimeout(300, TimeUnit.SECONDS, listener);
+                
                 Scanner projectScanner = null;
 
                 try {
@@ -365,9 +377,21 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                     }
 
                     projectScanner = new Scanner(projectFile, "UTF-8");
+		    		boolean isFirstLine = true;
 
                     while (projectScanner.hasNextLine()) {
-                        commonProjectList.add(projectScanner.nextLine());
+                    	
+						String line = projectScanner.nextLine();
+			
+						if(isFirstLine && line.length() > 1)
+                        {
+                            if(line.charAt(0) == 65279)
+                            {
+                                line = line.substring(1, line.length());
+                            }
+                            isFirstLine = false;
+                        }
+                        commonProjectList.add(line);
                     }
 
                     projectScanner.close();
