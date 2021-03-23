@@ -21,7 +21,9 @@
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>    </properties>
     <name>visualexpert</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-
+	<description>
+        Automate Analyse and Documentation with Visual-Expert tools to explore your source code
+    </description>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -95,5 +97,5 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
-    <description>Visual Expert Plugin to analyze Visual Expert projects and generate documentation for.</description>
+    
 </project>
