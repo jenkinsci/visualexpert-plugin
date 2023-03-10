@@ -51,7 +51,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     private ArrayList<String> projectList;
 
     // Visual Expert Application default installation path
-    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files (x86)\\Novalys\\Visual Expert 2021\\Novalys.VisualExpert.Console.exe";
+    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2023\\Novalys.VisualExpert.Console.exe";
     
     // Generate Documentation Command Success Message
     private static final String GENERATE_DOCUMENTATION_SUCCESS_STRING = "Documentation generated for the project";
@@ -241,8 +241,20 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_missingInstallPath());
             }
             
+            String pathVEExe = value;
+            
+            /* 
+                Fixed issue detected by Jenkins teams.
+                Path traversal vulnerability 
+                It will stop users from scanning the file system.
+                We will only check for the valid exe(NOVALYS.VISUALEXPERT.CONSOLE.EXE) for rest of the case it will return error.
+            */            
+            if(!pathVEExe.toUpperCase().endsWith("NOVALYS.VISUALEXPERT.CONSOLE.EXE")){
+                     return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_invalidPath());
+            }
+            
             // Check if the Visual Expert Application path entered by user is existing or not so that commands can be successfully sent to Visual Expert Application
-            File f = new File(value);
+            File f = new File(pathVEExe);
 
             if (!f.exists()) {
                 return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_installPathNotExist());
