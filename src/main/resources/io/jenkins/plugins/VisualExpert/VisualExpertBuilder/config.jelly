@@ -4,7 +4,7 @@
 	xmlns:f="/lib/form">
 
     <f:entry name="installPath" title="Installation Path" field="installPath">
-        <f:textbox default="C:\Program Files (x86)\Novalys\Visual Expert 2021\Novalys.VisualExpert.Console.exe" checkMethod="post"/>
+        <f:textbox default="C:\Program Files\Novalys\Visual Expert 2023\" checkMethod="post"/>
     </f:entry>
     
     <f:entry name="projectName" title="Visual Expert Project" field="projectName">

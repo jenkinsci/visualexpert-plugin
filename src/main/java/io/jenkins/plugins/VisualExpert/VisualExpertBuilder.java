@@ -35,6 +35,8 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.AncestorInPath;
@@ -45,23 +47,26 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
 
     private String _projectName;
     private String _installPath;
+    //private String _installationDir;
     private boolean _doAnalysis = true;
     private boolean _createReferenceDocument;
     private boolean _createCodeReviewDocument;
     private ArrayList<String> projectList;
 
     // Visual Expert Application default installation path
-    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2023\\Novalys.VisualExpert.Console.exe";
+    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2023\\";
     
     // Generate Documentation Command Success Message
     private static final String GENERATE_DOCUMENTATION_SUCCESS_STRING = "Documentation generated for the project";
     
     // Analyze Project Command Success Message
     private static final String ANALYZE_PROJECT_SUCCESS_STRING = "Analysis completed successfully for the project";
+    
+    private static final String CONSOLE_EXE_NAME ="NOVALYS.VISUALEXPERT.CONSOLE.EXE";
 
     /**
      *
-     * @param installPath: Visual Expert application (Executable) path
+     * @param installPath: Visual Expert application (Executable) containing directory path
      * @param projectName: Visual Expert project name (it should be exactly as shown in title bar of Visual Expert)
      * @param doAnalysis: specifies if it should analyze Visual Expert project or not
      * @param createReferenceDocument: specifies if it should generate reference documentation for Visual Expert project or not
@@ -69,6 +74,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
      */
     @DataBoundConstructor
     public VisualExpertBuilder(String installPath, String projectName, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
+        //this._installationDir = installationDir;
         this._installPath = installPath;
         this._projectName = projectName;
         this._doAnalysis = doAnalysis;
@@ -77,15 +83,14 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     }
 
     public VisualExpertBuilder(String installPath) {
-        this._installPath = installPath;
+        this._installPath =  installPath;
     }
 
     public String getInstallPath() {
 
         if (StringUtils.isEmpty(_installPath)) {
-            _installPath = DEFAULT_INSTALLATION_PATH;
+            this._installPath = DEFAULT_INSTALLATION_PATH;
         }
-
         return _installPath;
     }
 
@@ -107,17 +112,34 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
 	// Returns Array list of Visual Expert Projects
     public ArrayList<String> getProjectList() {
         if (null == projectList || projectList.isEmpty()) {
-            
             // Call Get Projects List Visual Expert Command and returns array list of Visual Expert Projects by reading project list file
-            projectList = VisualExpertHelper.ReadProjectsFile(_installPath);
+            String veConsoleExe = getConsoleExePath(_installPath);
+            projectList = VisualExpertHelper.ReadProjectsFile(veConsoleExe);
         }
         return projectList;
+    }
+    
+    public static String getConsoleExePath(String installationfolder){
+        
+        Path folderPath = Paths.get(installationfolder);
+                
+        Path path = Paths.get(installationfolder,CONSOLE_EXE_NAME);
+        if(!folderPath.endsWith(File.separator)){
+            path = Paths.get(installationfolder,File.separator,CONSOLE_EXE_NAME);
+        }          
+
+        Path normalizePath = path.normalize();
+        String pathVEExe = normalizePath.toString();
+            
+        return pathVEExe;
     }
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
 
         listener.getLogger().println("Installation Path: " + _installPath);
+        String veConsoleExe = getConsoleExePath(_installPath);
+        listener.getLogger().println("Console Exe Path: " + veConsoleExe);
         listener.getLogger().println("Visual Expert Project Name: " + _projectName);
         listener.getLogger().println("Analyze Project: " + _doAnalysis);
         listener.getLogger().println("Generate Reference Documentation: " + _createReferenceDocument);
@@ -137,7 +159,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             TaskListener taskListener = VisualExpertHelper.GetVisualExpertCommandOutputListener(visualExpertCommandOutputFileName);
             
             // Call Analyze Visual Expert Project Command 
-            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(_installPath + " " + " -a -p '" + _projectName + "'")).stdout(taskListener).join();
+            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -a -p '" + _projectName + "'")).stdout(taskListener).join();
             
             // Verify Visual Expert Comamnd Output File for Command Success/failure
             isAnalysisSucceeded = VisualExpertHelper.VerifyOutput(visualExpertCommandOutputFileName, ANALYZE_PROJECT_SUCCESS_STRING, true, listener);
@@ -155,7 +177,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             TaskListener taskListener = VisualExpertHelper.GetVisualExpertCommandOutputListener(visualExpertCommandOutputFileName);
             
             // Call Generate Reference Documenation Visual Expert Project Comamnd 
-            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(_installPath + " " + " -d -p '" + _projectName + "'" + " -t reference")).stdout(taskListener).join();
+            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -d -p '" + _projectName + "'" + " -t reference")).stdout(taskListener).join();
             
             // Verify Visual Expert Comamnd Output File for Command Success/failure
             isReferenceDocumentGenerated = VisualExpertHelper.VerifyOutput(visualExpertCommandOutputFileName, GENERATE_DOCUMENTATION_SUCCESS_STRING, true, listener);
@@ -173,7 +195,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             TaskListener taskListener = VisualExpertHelper.GetVisualExpertCommandOutputListener(visualExpertCommandOutputFileName);
             
             // Call Generate Code Review Documenation Visual Expert Project Comamnd 
-            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(_installPath + " " + " -d -p '" + _projectName + "'" + " -t codereview")).stdout(taskListener).join();
+            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -d -p '" + _projectName + "'" + " -t codereview")).stdout(taskListener).join();
             
             // Verify Visual Expert Comamnd Output File for Command Success/failure
             isCodeReviewDocumentGenerated = VisualExpertHelper.VerifyOutput(visualExpertCommandOutputFileName, GENERATE_DOCUMENTATION_SUCCESS_STRING, true, listener);
@@ -240,8 +262,12 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             if (Util.fixEmptyAndTrim(value) == null) {
                 return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_missingInstallPath());
             }
-            
-            String pathVEExe = value;
+
+            /*
+            Noramlize the path received from user.
+            Take path of folder containing Visual Expert Exes.
+            */
+            String pathVEExe = getConsoleExePath(value);
             
             /* 
                 Fixed issue detected by Jenkins teams.
@@ -249,7 +275,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                 It will stop users from scanning the file system.
                 We will only check for the valid exe(NOVALYS.VISUALEXPERT.CONSOLE.EXE) for rest of the case it will return error.
             */            
-            if(!pathVEExe.toUpperCase().endsWith("NOVALYS.VISUALEXPERT.CONSOLE.EXE")){
+            if(!pathVEExe.toUpperCase().endsWith(CONSOLE_EXE_NAME)){
                      return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_invalidPath());
             }
             
@@ -278,9 +304,11 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             if (installPath.isEmpty()) {
                 return model;
             }
+            
+            String pathVEExe = getConsoleExePath(installPath);
 
             // Reads list of Visual Expert Projects by calling Visual Expert Get Projects List Command and reading projects list from text file
-            ArrayList<String> projectList = VisualExpertHelper.ReadProjectsFile(installPath);
+            ArrayList<String> projectList = VisualExpertHelper.ReadProjectsFile(pathVEExe);
 
             if (null == projectList) {
                 return model;
