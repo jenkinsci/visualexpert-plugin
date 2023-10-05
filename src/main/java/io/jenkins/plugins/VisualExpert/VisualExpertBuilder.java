@@ -53,6 +53,9 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     private boolean _createReferenceDocument;
     private boolean _createCodeReviewDocument;
     private ArrayList<String> projectList;
+    private String _reportPath;
+    private String _reportFormat;
+    private boolean _generateReport = false;
 
     // Visual Expert Application default installation path
     private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2023\\";
@@ -69,16 +72,22 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
      *
      * //@param installPath: Visual Expert application (Executable) containing directory path
      * @param projectName: Visual Expert project name (it should be exactly as shown in title bar of Visual Expert)
+     * @param reportPath : Specifies the code inspection report file path
+     * @param reportFormat : Specifies the code inspection report format
+     * @param generateReport: specifies if you would like to generate code inspection report
      * @param doAnalysis: specifies if it should analyze Visual Expert project or not
      * @param createReferenceDocument: specifies if it should generate reference documentation for Visual Expert project or not
      * @param createCodeReviewDocument: specifies if it should generate code review documentation for Visual Expert project or not
      */
     @DataBoundConstructor
 //    public VisualExpertBuilder(String installPath, String projectName, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
-    public VisualExpertBuilder(String projectName, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
+    public VisualExpertBuilder(String projectName, String reportPath, String reportFormat, Boolean generateReport, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
         //this._installationDir = installationDir;
 //        this._installPath = installPath;
         this._projectName = projectName;
+        this._reportPath = reportPath;
+        this._reportFormat = reportFormat;
+        this._generateReport = generateReport;
         this._doAnalysis = doAnalysis;
         this._createReferenceDocument = createReferenceDocument;
         this._createCodeReviewDocument = createCodeReviewDocument;
@@ -104,8 +113,20 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
 //        return _installPath;
     }
 
+    public String getReportPath() {
+        return _reportPath;
+    }
+    
+    public String getReportFormat() {
+        return _reportFormat;
+    }
+    
     public String getProjectName() {
         return _projectName;
+    }
+    
+    public boolean isGenerateReport() {
+        return _generateReport;
     }
 
     public boolean isDoAnalysis() {
@@ -164,6 +185,9 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
         String veConsoleExe = getConsoleExePath(installPath);
         listener.getLogger().println("Console Exe Path: " + veConsoleExe);
         listener.getLogger().println("Visual Expert Project Name: " + _projectName);
+        listener.getLogger().println("Generate code inspection report: " + _generateReport);
+        listener.getLogger().println("Code Inspection Report Path: " + _reportPath);
+        listener.getLogger().println("Code Inspection Report Format: " + _reportFormat);
         listener.getLogger().println("Analyze Project: " + _doAnalysis);
         listener.getLogger().println("Generate Reference Documentation: " + _createReferenceDocument);
         listener.getLogger().println("Generate Code Review Documentation: " + _createCodeReviewDocument);
@@ -181,8 +205,33 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             // Get the output task listener
             TaskListener taskListener = VisualExpertHelper.GetVisualExpertCommandOutputListener(visualExpertCommandOutputFileName);
             
-            // Call Analyze Visual Expert Project Command 
-            launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -a -p '" + _projectName + "'")).stdout(taskListener).join();
+            if(_generateReport){
+                     
+                if (Util.fixEmptyAndTrim(_reportPath) == null) {
+                     listener.getLogger().println(Messages.VisualExpertBuilder_DescriptorImpl_errors_missingOutputPath());
+                     return;
+                } 
+                else
+                {
+                    //launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + "-v" )).stdout(taskListener).join();
+                    
+                    //launcher.launch().stdout(taskListener);
+                    
+                    //int result = launcher.launch().join();
+                    //listener.getLogger().println(result);
+                    
+                    //String versionInfo = listener.getLogger().toString();
+                    //listener.getLogger().println(versionInfo);
+                    
+                    //listener.getLogger().println("Start");
+                    // Call Analyze Visual Expert Project Command with code inspection report
+                    launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -a -p '" + _projectName + "'" + " -O '"+ _reportPath + "'" + " --ReportFormat '" + _reportFormat + "'")).stdout(taskListener).join();
+                }
+            }
+            else
+            {
+                launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -a -p '" + _projectName + "'")).stdout(taskListener).join();
+            }
             
             // Verify Visual Expert Comamnd Output File for Command Success/failure
             isAnalysisSucceeded = VisualExpertHelper.VerifyOutput(visualExpertCommandOutputFileName, ANALYZE_PROJECT_SUCCESS_STRING, true, listener);
@@ -297,6 +346,14 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
+        public ListBoxModel doFillReportFormatItems() {
+                ListBoxModel items = new ListBoxModel();
+
+                items.add("JUNIT", "JUNIT");
+                //items.add("JSON", "JSON");
+
+                return items;
+        }
        
 
         @POST
@@ -419,9 +476,9 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
             }
 
             ArgumentListBuilder commandArgument = new ArgumentListBuilder();
-
             commandArgument.addTokenized(installationPath + " " + " -L ");
-
+           
+           
             commonProjectList = new ArrayList<String>();
             String projectsFileName = null;
 
@@ -435,7 +492,6 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                 Scanner projectScanner = null;
 
                 try {
-                    
                     
                     // Read List of Visual Expert Projects from the text file generated by Visual Expert Application
                     String programDataFolder = System.getenv("PROGRAMDATA");

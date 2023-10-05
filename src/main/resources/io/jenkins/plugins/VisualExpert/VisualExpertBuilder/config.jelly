@@ -6,10 +6,24 @@
     <f:entry name="projectName" title="Visual Expert Project" field="projectName">
 	<f:select checkMethod="post" />
     </f:entry>
+
+    <f:optionalBlock name="doAnalysis" title="Analyze Project" field="doAnalysis" checked="true" inline="true">
+
+        <f:optionalBlock name="generateReport" title="Would you like to generate report?" field="generateReport" inline="true">
+
+            <div style="color:red">Report generation functionality available from Visual Expert 2023.9 version onwards.</div>
+            <f:entry name="reportFormat" title="Select Report Format" field="reportFormat">
+                <f:select />
+            </f:entry>
+
+            <f:entry title="Report output Path" field="reportPath">
+                <f:textbox default="C:\ProgramData\Novalys\VisualExpert\Jenkins\output.xml" />
+            </f:entry>
 	
-    <f:entry name="doAnalysis" title="Analyze Project" field="doAnalysis">
-       <f:checkbox default="true"/>
-    </f:entry>
+        </f:optionalBlock>
+	
+     </f:optionalBlock>
+    
     <f:entry name="createReferenceDocument" title="Generate Reference Documentation" field="createReferenceDocument">
         <f:checkbox />
     </f:entry>

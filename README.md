@@ -1,7 +1,5 @@
 
-[![Build Status](https://ci.jenkins.io/job/Plugins/job/visualexpert-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/visualexpert-plugin/job/master/)
 [![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/visualexpert.svg)](https://plugins.jenkins.io/visualexpert)
-[![GitHub release](https://img.shields.io/github/release/jenkinsci/visualexpert-plugin.svg?label=changelog)](https://github.com/jenkinsci/visualexpert-plugin/releases/latest)
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/visualexpert.svg?color=blue)](https://plugins.jenkins.io/visualexpert)
 
 # VisualExpert Jenkins Plugin
@@ -31,7 +29,7 @@ Select the project from the dropdown list.
 ![required field validation](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/check-validation.PNG)
 
 <p><br></p>
-Select the checkboxes based on operation you would like to perform, like project analysis, generate documentations.
+Select the checkboxes based on operation you would like to perform, like project analysis, generate documentations. If you wish to generate Code Inspection report then enable to report generation and set the required parameters. Also, in-case of report generation, please select the appropriate Code Review Profile in the Visual Expert. Open Visual Expert and in the project setting --> Code Inspection --> Select the appropriate profile. Code rules failure or success decided based on selected profile settings. 
 <p></p>
 
 
