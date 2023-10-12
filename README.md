@@ -43,11 +43,11 @@ Select the checkboxes based on operation you would like to perform, like project
 
 Publishing JUnit test result you could view the test results and it's history as shown below. In the post build event configure JUnit test result report.
 
-![visual expert test result](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/test-result.PNG)
+![visual expert test result](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/test-result.png)
 
 <p><br></p>
 
-![visual expert test history](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/test-history.PNG)
+![visual expert test history](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/test-history.png)
 
 ## LICENSE
 
