@@ -39,6 +39,16 @@ Select the checkboxes based on operation you would like to perform, like project
 
 ![visual expert build console output](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/console-output.PNG)
 
+<p><br></p>
+
+Publishing JUnit test result you could view the test results and it's history as shown below. In the post build event configure JUnit test result report.
+
+![visual expert test result](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/test-result.PNG)
+
+<p><br></p>
+
+![visual expert test history](https://github.com/jenkinsci/visualexpert-plugin/blob/main/docs/images/test-history.PNG)
+
 ## LICENSE
 
 Licensed under GNU General Public License Version 2, see [LICENSE](LICENSE.md)
