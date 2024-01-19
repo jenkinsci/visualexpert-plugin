@@ -58,7 +58,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     private boolean _generateReport = false;
 
     // Visual Expert Application default installation path
-    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2023\\";
+    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2024\\";
     
     // Generate Documentation Command Success Message
     private static final String GENERATE_DOCUMENTATION_SUCCESS_STRING = "Documentation generated for the project";
@@ -66,7 +66,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     // Analyze Project Command Success Message
     private static final String ANALYZE_PROJECT_SUCCESS_STRING = "Analysis completed successfully for the project";
     
-    public static final String CONSOLE_EXE_NAME ="NOVALYS.VISUALEXPERT.CONSOLE.EXE";
+    public static final String CONSOLE_EXE_NAME ="NOVALYS.VISUALEXPERT.CONSOLE.COMMANDLINE.EXE";
 
     /**
      *
