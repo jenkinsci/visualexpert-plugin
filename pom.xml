@@ -15,8 +15,9 @@
         <revision>2024.1.2</revision>
         <changelist>-SNAPSHOT</changelist>
 
-        <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-        <jenkins.version>2.235.1</jenkins.version>
+        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+        <jenkins.baseline>2.235</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.1</jenkins.version>
         <java.level>8</java.level>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>    </properties>
     <name>visualexpert</name>
@@ -29,7 +30,7 @@
             <dependency>
                 <!-- Pick up common dependencies for the selected LTS line: https://github.com/jenkinsci/bom#usage -->
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.235.x</artifactId>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
                 <version>16</version>
                 <scope>import</scope>
                 <type>pom</type>
