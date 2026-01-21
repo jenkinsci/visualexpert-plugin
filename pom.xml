@@ -9,10 +9,10 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>visualexpert</artifactId>
-    <version>2026.1.1</version>
+    <version>2026.1.2</version>
     <packaging>hpi</packaging>
     <properties>
-        <revision>2026.1.1</revision>
+        <revision>2026.1.2</revision>
         <changelist>-SNAPSHOT</changelist>
 
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
