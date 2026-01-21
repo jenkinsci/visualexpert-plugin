@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Release plugin
+        uses: jenkinsci/maven-release-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          maven-args: -DskipTests
