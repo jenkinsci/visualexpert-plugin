@@ -1,0 +1,12 @@
+name: cd
+ 
+on:
+  push:
+    # Trigger CD only when a new Git tag is pushed
+    tags:
+      - '*'
+ 
+jobs:
+  release:
+    # Use the reusable Jenkins CD workflow maintained by Jenkins Infra
+    uses: jenkins-infra/github-reusable-workflows/.github/workflows/maven-cd.yml@v1
