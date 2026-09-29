@@ -112,7 +112,7 @@ public final class VisualExpertInstallation extends ToolInstallation implements 
                 Fixed issue detected by Jenkins teams.
                 Path traversal vulnerability 
                 It will stop users from scanning the file system.
-                We will only check for the valid exe(NOVALYS.VISUALEXPERT.CONSOLE.EXE) for rest of the case it will return error.
+                We will only check for the valid exe(Novalys.VisualExpert.Console.CommandLine.EXE) for rest of the case it will return error.
             */            
             if(!pathVEExe.toUpperCase().endsWith(VisualExpertBuilder.CONSOLE_EXE_NAME)){
                      return FormValidation.error(Messages.VisualExpertBuilder_DescriptorImpl_errors_invalidPath());

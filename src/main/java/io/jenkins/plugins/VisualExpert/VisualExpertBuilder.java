@@ -58,7 +58,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     private boolean _generateReport = false;
 
     // Visual Expert Application default installation path
-    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2024\\";
+    private static final String DEFAULT_INSTALLATION_PATH = "C:\\Program Files\\Novalys\\Visual Expert 2026\\";
     
     // Generate Documentation Command Success Message
     private static final String GENERATE_DOCUMENTATION_SUCCESS_STRING = "Documentation generated for the project";
@@ -349,8 +349,8 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
         public ListBoxModel doFillReportFormatItems() {
                 ListBoxModel items = new ListBoxModel();
 
-                items.add("JUNIT", "JUNIT");
-                //items.add("JSON", "JSON");
+                items.add("JSON", "JSON");
+                items.add("XML", "XML");
 
                 return items;
         }
