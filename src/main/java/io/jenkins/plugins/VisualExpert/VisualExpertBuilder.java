@@ -7,7 +7,7 @@ import hudson.model.Result;
 import com.google.common.base.Strings;
 import hudson.CopyOnWrite;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
