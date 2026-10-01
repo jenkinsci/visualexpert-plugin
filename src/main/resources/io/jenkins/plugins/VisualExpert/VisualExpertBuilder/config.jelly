@@ -11,7 +11,11 @@
 
         <f:optionalBlock name="generateReport" title="Would you like to generate report?" field="generateReport" inline="true">
 
-            <div style="color:red">Report generation functionality available from Visual Expert 2023.9 version onwards.</div>
+            <div style="color:red">Report type selection and report generation are available in Visual Expert 2026.10 and later.</div>
+            <f:entry name="reportType" title="Select Report Type" field="reportType">
+                <f:select />
+            </f:entry>
+
             <f:entry name="reportFormat" title="Select Report Format" field="reportFormat">
                 <f:select />
             </f:entry>

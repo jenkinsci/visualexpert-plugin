@@ -55,6 +55,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
     private ArrayList<String> projectList;
     private String _reportPath;
     private String _reportFormat;
+    private String _reportType;
     private boolean _generateReport = false;
 
     // Visual Expert Application default installation path
@@ -73,6 +74,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
      * //@param installPath: Visual Expert application (Executable) containing directory path
      * @param projectName: Visual Expert project name (it should be exactly as shown in title bar of Visual Expert)
      * @param reportPath : Specifies the code inspection report file path
+     * @param reportType : Specifies the code inspection report type
      * @param reportFormat : Specifies the code inspection report format
      * @param generateReport: specifies if you would like to generate code inspection report
      * @param doAnalysis: specifies if it should analyze Visual Expert project or not
@@ -81,11 +83,12 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
      */
     @DataBoundConstructor
 //    public VisualExpertBuilder(String installPath, String projectName, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
-    public VisualExpertBuilder(String projectName, String reportPath, String reportFormat, Boolean generateReport, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
+    public VisualExpertBuilder(String projectName, String reportPath, String reportType, String reportFormat, Boolean generateReport, Boolean doAnalysis, Boolean createReferenceDocument,Boolean createCodeReviewDocument) {
         //this._installationDir = installationDir;
 //        this._installPath = installPath;
         this._projectName = projectName;
         this._reportPath = reportPath;
+        this._reportType = reportType;
         this._reportFormat = reportFormat;
         this._generateReport = generateReport;
         this._doAnalysis = doAnalysis;
@@ -115,6 +118,10 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
 
     public String getReportPath() {
         return _reportPath;
+    }
+    
+    public String getReportType() {
+        return _reportType;
     }
     
     public String getReportFormat() {
@@ -187,6 +194,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
         listener.getLogger().println("Visual Expert Project Name: " + _projectName);
         listener.getLogger().println("Generate code inspection report: " + _generateReport);
         listener.getLogger().println("Code Inspection Report Path: " + _reportPath);
+        listener.getLogger().println("Code Inspection Report Type: " + _reportType);
         listener.getLogger().println("Code Inspection Report Format: " + _reportFormat);
         listener.getLogger().println("Analyze Project: " + _doAnalysis);
         listener.getLogger().println("Generate Reference Documentation: " + _createReferenceDocument);
@@ -225,7 +233,7 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
                     
                     //listener.getLogger().println("Start");
                     // Call Analyze Visual Expert Project Command with code inspection report
-                    launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -a -p '" + _projectName + "'" + " -O '"+ _reportPath + "'" + " --ReportFormat '" + _reportFormat + "'")).stdout(taskListener).join();
+                    launcher.launch().cmds(VisualExpertHelper.GetCommandLine(veConsoleExe + " " + " -a -p '" + _projectName + "'" + " -O '"+ _reportPath + "'" + " --ReportType '" + _reportType +"'" + " --ReportFormat '" + _reportFormat + "'")).stdout(taskListener).join();
                 }
             }
             else
@@ -285,6 +293,10 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
         
          @CopyOnWrite
         private volatile VisualExpertInstallation[] installations = new VisualExpertInstallation[0];
+         
+        public Descriptor() {
+            load();
+        }
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
@@ -297,11 +309,18 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
         }
         
         public VisualExpertInstallation[] getInstallations() {
-            return Arrays.copyOf(installations, installations.length);
+            VisualExpertInstallation[] current = installations;
+
+            return current == null
+                    ? new VisualExpertInstallation[0]
+                    : Arrays.copyOf(current, current.length);
         }
 
-        public void setInstallations(VisualExpertInstallation... antInstallations) {
-            this.installations = antInstallations;
+        public void setInstallations(VisualExpertInstallation... installations) {
+            this.installations = installations == null
+                    ? new VisualExpertInstallation[0]
+                    : Arrays.copyOf(installations, installations.length);
+
             save();
         }
 
@@ -345,14 +364,33 @@ public class VisualExpertBuilder extends Builder implements SimpleBuildStep {
 
             return FormValidation.ok();
         }
+        
+       public ListBoxModel doFillReportTypeItems() {
+            ListBoxModel items = new ListBoxModel();
 
-        public ListBoxModel doFillReportFormatItems() {
-                ListBoxModel items = new ListBoxModel();
+            items.add("CodeRule Based", "CodeRuleBased");
+            items.add("DefectSummary Based", "DefectSummaryBased");
 
+            return items;
+        }
+
+        public ListBoxModel doFillReportFormatItems(@QueryParameter("reportType") String reportType) {
+
+            ListBoxModel items = new ListBoxModel();
+
+            if ("CodeRuleBased".equals(reportType)) {
+               
+                items.add("JUNIT", "JUNIT");
+            }
+             else if (reportType == null
+                    || reportType.isEmpty()
+                    ||"DefectSummaryBased".equals(reportType)) {
+                // Default for a new configuration.
                 items.add("JSON", "JSON");
                 items.add("XML", "XML");
+            }
 
-                return items;
+            return items;
         }
        
 
